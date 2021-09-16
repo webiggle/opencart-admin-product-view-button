@@ -4,30 +4,45 @@
 	<version>0.1.0</version>
     <author>Webiggle Team</author>
     <link>https://store.webiggle.com</link>
-    <code>adminviewproductbutton</code>
-	<!-- Add Button -->
-	<file path="admin/view/template/catalog/product_list.tpl">
+    <code>admin_product_view_button</code>
+
+    <!-- List Button -->
+	<file path="admin/view/template/catalog/product_list.twig">
 		<operation>
-		    <search><![CDATA[<td class="text-right"><a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
-		    <add position="replace"><![CDATA[
-                  <td class="text-right"><a href="<?php echo $product['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default"><i class="fa fa-eye"></i></a>&nbsp;<a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+			<search><![CDATA[<td class="text-right"><a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
+			<add position="replace"><![CDATA[
+				<td class="text-right"><a href="{{ product.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-default"><i class="fa fa-eye"></i></a>
+				<a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+			]]></add>
+		</operation>
+	</file>
+	
+	<!-- Form Button -->
+	<file path="admin/view/template/catalog/product_form.twig">
+		<operation>
+		    <search><![CDATA[<button type="submit" form="form-product" data-toggle="tooltip"]]></search>
+		    <add position="before"><![CDATA[
+    		    {% if view is defined %}
+    		        <a href="{{ view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-default"><i class="fa fa-eye"></i></a>
+    		    {% endif %}
 		    ]]></add>
 		</operation> 
 	</file>
 
 	<file path="admin/controller/catalog/product.php">
-		<!-- Add button lang -->
+		<!-- Add logic for list -->
 		<operation>
-		    <search><![CDATA[$data['button_filter'] = $this->language->get('button_filter');]]></search>
-		    <add position="after"><![CDATA[
-		        $data['button_view'] = $this->language->get('button_view');
-		    ]]></add>
-		</operation>
-		<!-- Add button code -->
-		<operation>
-		    <search><![CDATA[$data['products'][] = array(]]></search>
-		    <add position="after"><![CDATA[
+			<search><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[
 				'view' => sprintf('/index.php?route=product/product&product_id=%s', $result['product_id']),
+	            ]]></add>
+		</operation>
+		
+		<!-- Add logic for form -->
+		<operation>
+		    <search><![CDATA[$data['action'] = $this->url->link('catalog/product/edit']]></search>
+		    <add position="before"><![CDATA[
+				$data['view'] = sprintf('/index.php?route=product/product&product_id=%s', $this->request->get['product_id']);
 		    ]]></add>
 		</operation> 
 	</file>
