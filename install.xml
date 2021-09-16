@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+	<name>Admin View Product Button</name>
+	<version>0.1.0</version>
+    <author>Webiggle Team</author>
+    <link>https://store.webiggle.com</link>
+    <code>adminviewproductbutton</code>
+	<!-- Add Button -->
+	<file path="admin/view/template/catalog/product_list.tpl">
+		<operation>
+		    <search><![CDATA[<td class="text-right"><a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
+		    <add position="replace"><![CDATA[
+                  <td class="text-right"><a href="<?php echo $product['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default"><i class="fa fa-eye"></i></a>&nbsp;<a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+		    ]]></add>
+		</operation> 
+	</file>
+
+	<file path="admin/controller/catalog/product.php">
+		<!-- Add button lang -->
+		<operation>
+		    <search><![CDATA[$data['button_filter'] = $this->language->get('button_filter');]]></search>
+		    <add position="after"><![CDATA[
+		        $data['button_view'] = $this->language->get('button_view');
+		    ]]></add>
+		</operation>
+		<!-- Add button code -->
+		<operation>
+		    <search><![CDATA[$data['products'][] = array(]]></search>
+		    <add position="after"><![CDATA[
+				'view' => sprintf('/index.php?route=product/product&product_id=%s', $result['product_id']),
+		    ]]></add>
+		</operation> 
+	</file>
+</modification> 
