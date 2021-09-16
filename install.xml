@@ -5,7 +5,8 @@
     <author>Webiggle Team</author>
     <link>https://store.webiggle.com</link>
     <code>adminviewproductbutton</code>
-	<!-- Add Button -->
+    
+    <!-- List Button -->
 	<file path="admin/view/template/catalog/product_list.tpl">
 		<operation>
 		    <search><![CDATA[<td class="text-right"><a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
@@ -14,20 +15,49 @@
 		    ]]></add>
 		</operation> 
 	</file>
-
+	
+	<!-- Form Button -->
+	<file path="admin/view/template/catalog/product_form.tpl">
+		<operation>
+		    <search><![CDATA[<button type="submit" form="form-product" data-toggle="tooltip"]]></search>
+		    <add position="before"><![CDATA[
+             <?php if (isset($view)) { ?>
+               <a href="<?php echo $view; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default"><i class="fa fa-eye"></i></a>
+             <?php } ?>
+		    ]]></add>
+		</operation> 
+	</file>
+	
 	<file path="admin/controller/catalog/product.php">
-		<!-- Add button lang -->
+	    <!-- Add lang for list-->
 		<operation>
 		    <search><![CDATA[$data['button_filter'] = $this->language->get('button_filter');]]></search>
 		    <add position="after"><![CDATA[
 		        $data['button_view'] = $this->language->get('button_view');
 		    ]]></add>
 		</operation>
-		<!-- Add button code -->
+		
+		<!-- Add lang for form -->
+		<operation>
+		    <search><![CDATA[$data['button_save'] = $this->language->get('button_save');]]></search>
+		    <add position="before"><![CDATA[
+		        $data['button_view'] = $this->language->get('button_view');
+		    ]]></add>
+		</operation>
+		
+		<!-- Add logic for list -->
 		<operation>
 		    <search><![CDATA[$data['products'][] = array(]]></search>
 		    <add position="after"><![CDATA[
 				'view' => sprintf('/index.php?route=product/product&product_id=%s', $result['product_id']),
+		    ]]></add>
+		</operation> 
+		
+		<!-- Add logic for form -->
+		<operation>
+		    <search><![CDATA[$data['action'] = $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $this->request->get['product_id'] . $url, true);]]></search>
+		    <add position="before"><![CDATA[
+				$data['view'] = sprintf('/index.php?route=product/product&product_id=%s', $this->request->get['product_id']);
 		    ]]></add>
 		</operation> 
 	</file>
