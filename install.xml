@@ -1,63 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
 	<name>Admin View Product Button</name>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
     <author>Webiggle Team</author>
-    <link>https://store.webiggle.com</link>
-    <code>adminviewproductbutton</code>
-    
+    <link>https://www.opencart.com/index.php?route=marketplace/extension/info&amp;extension_id=42658</link>
+    <code>admin_product_view_button</code>
+
     <!-- List Button -->
-	<file path="admin/view/template/catalog/product_list.tpl">
+	<file path="admin/view/template/catalog/product_list.twig">
 		<operation>
-		    <search><![CDATA[<td class="text-right"><a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
-		    <add position="replace"><![CDATA[
-                  <td class="text-right"><a href="<?php echo $product['view']; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default"><i class="fa fa-eye"></i></a>&nbsp;<a href="<?php echo $product['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
-		    ]]></add>
-		</operation> 
+			<search><![CDATA[<td class="text-right"><a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>]]></search>
+			<add position="replace"><![CDATA[
+				<td class="text-right"><a href="{{ product.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-default {{ product.view_button_class }}"><i class="fa fa-eye"></i></a>
+				<a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+			]]></add>
+		</operation>
 	</file>
 	
 	<!-- Form Button -->
-	<file path="admin/view/template/catalog/product_form.tpl">
+	<file path="admin/view/template/catalog/product_form.twig">
 		<operation>
 		    <search><![CDATA[<button type="submit" form="form-product" data-toggle="tooltip"]]></search>
 		    <add position="before"><![CDATA[
-             <?php if (isset($view)) { ?>
-               <a href="<?php echo $view; ?>" data-toggle="tooltip" title="<?php echo $button_view; ?>" class="btn btn-default"><i class="fa fa-eye"></i></a>
-             <?php } ?>
+  	        {% if view %}
+              <a href="{{ view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-default {{ view_button_class }}"><i class="fa fa-eye"></i></a>
+            {% endif %}
 		    ]]></add>
 		</operation> 
 	</file>
-	
+
 	<file path="admin/controller/catalog/product.php">
-	    <!-- Add lang for list-->
+		<!-- Add Logic for list -->
 		<operation>
-		    <search><![CDATA[$data['button_filter'] = $this->language->get('button_filter');]]></search>
-		    <add position="after"><![CDATA[
-		        $data['button_view'] = $this->language->get('button_view');
+			<search><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[
+				'view' => $result['status'] ? sprintf('/index.php?route=product/product&product_id=%s', $result['product_id']) : null,
+				'view_button_class' => !$result['status'] ? 'disabled' : '',
+	            ]]></add>
+		</operation>
+		
+		<!-- Add Logic for form -->
+		<operation>
+		    <search><![CDATA[$data['action'] = $this->url->link('catalog/product/edit']]></search>
+		    <add position="before"><![CDATA[
+    		$data['view'] = isset($this->request->get['product_id']) 
+    			? sprintf('/index.php?route=product/product&product_id=%s', $this->request->get['product_id'])
+    			: false;
 		    ]]></add>
 		</operation>
 		
-		<!-- Add lang for form -->
+		<!-- Logic if disabled -->
 		<operation>
-		    <search><![CDATA[$data['button_save'] = $this->language->get('button_save');]]></search>
+		    <search index="0"><![CDATA[if (isset($this->request->post['status'])) {]]></search>
 		    <add position="before"><![CDATA[
-		        $data['button_view'] = $this->language->get('button_view');
-		    ]]></add>
-		</operation>
-		
-		<!-- Add logic for list -->
-		<operation>
-		    <search><![CDATA[$data['products'][] = array(]]></search>
-		    <add position="after"><![CDATA[
-				'view' => sprintf('/index.php?route=product/product&product_id=%s', $result['product_id']),
-		    ]]></add>
-		</operation> 
-		
-		<!-- Add logic for form -->
-		<operation>
-		    <search><![CDATA[$data['action'] = $this->url->link('catalog/product/edit', 'token=' . $this->session->data['token'] . '&product_id=' . $this->request->get['product_id'] . $url, true);]]></search>
-		    <add position="before"><![CDATA[
-				$data['view'] = sprintf('/index.php?route=product/product&product_id=%s', $this->request->get['product_id']);
+                $data['view_button_class'] = !$product_info['status'] ? 'disabled' : '';
 		    ]]></add>
 		</operation> 
 	</file>
