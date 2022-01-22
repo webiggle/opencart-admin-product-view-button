@@ -9,6 +9,5 @@
 
 #### !! Installed Complete !!
 
-For Support & Customizations
-Email us at: info@webiggle.com
-Website: webiggle.com
+## For Support / Customizations / Inquiry:
+Create a ticket at: https://webiggle.freshdesk.com/support/home
