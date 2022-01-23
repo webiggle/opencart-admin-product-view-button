@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modification>
-	<name>Admin View Product Button</name>
+	<name>Admin View Product Button List &amp; Form</name>
 	<version>1.0.0</version>
     <author>Webiggle Team</author>
     <link>https://www.opencart.com/index.php?route=marketplace/extension/info&amp;extension_id=42658</link>
@@ -30,7 +30,7 @@
 	</file>
 
 	<file path="admin/controller/catalog/product.php">
-		<!-- Add Logic for list -->
+		<!-- Add logic for list -->
 		<operation>
 			<search><![CDATA[$data['products'][] = array(]]></search>
 			<add position="after"><![CDATA[
@@ -39,7 +39,7 @@
 	            ]]></add>
 		</operation>
 		
-		<!-- Add Logic for form -->
+		<!-- Add logic for form -->
 		<operation>
 		    <search><![CDATA[$data['action'] = $this->url->link('catalog/product/edit']]></search>
 		    <add position="before"><![CDATA[

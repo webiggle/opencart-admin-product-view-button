@@ -1,4 +1,4 @@
-# Opencart OCMOD: Admin Product View Button
+# Opencart OCMOD: Admin Product View Button List & Form
 
 ## Instructions
 1. Go to > Extensions > Extension Installer
